@@ -394,7 +394,7 @@ def gallery():
     <div class="section-head">
       <p class="eyebrow">{tr('Our work', 'Nuestro trabajo')}</p>
       <h2>{tr('Standing seam, installed.', 'Standing seam, instalado.')}</h2>
-      <p>{tr('Real photos from one of our standing seam jobs — every hip, valley and ridge finished by our crew.', 'Fotos reales de uno de nuestros trabajos standing seam — cada limatesa, limahoya y cumbrera terminada por nuestro equipo.')}</p>
+      <p>{tr('Real photos from our standing seam work in the Houston–Galveston area — every hip, valley and ridge finished by our crew.', 'Fotos reales de nuestros trabajos standing seam en el área de Houston–Galveston — cada limatesa, limahoya y cumbrera terminada por nuestro equipo.')}</p>
     </div>
     <div class="gallery reveal">{tiles}</div>
   </div>
