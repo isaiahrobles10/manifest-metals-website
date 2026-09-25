@@ -94,6 +94,20 @@
     });
   }
 
+  // Photo lightbox
+  var lb = document.querySelector(".lightbox");
+  if (lb && lb.showModal) {
+    var lbImg = lb.querySelector("img");
+    document.querySelectorAll(".g-tile").forEach(function (t) {
+      t.addEventListener("click", function () {
+        lbImg.src = t.getAttribute("data-full");
+        lbImg.alt = t.querySelector("img").alt;
+        lb.showModal();
+      });
+    });
+    lb.addEventListener("click", function (e) { if (e.target === lb || e.target.closest(".lb-close")) lb.close(); });
+  }
+
   // Quote form (Web3Forms). The access key is set in _build/build.py.
   var form = document.getElementById("quote-form");
   if (!form) return;

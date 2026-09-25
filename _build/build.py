@@ -54,6 +54,13 @@ COLORS = [
 ]
 for key, *_ in COLORS:
     IMAGES["c-" + key] = (800, 1600)
+# Real job photos (drone), assets/img/p/
+for n in range(1, 6):
+    IMAGES[f"job{n}"] = (800, 1280)
+
+
+def img_path(name, w):
+    return f"img/{'p' if name.startswith('job') else 'r'}/{name}-{w}.webp"
 
 LANG = "en"
 CURRENT = "home"
@@ -77,11 +84,11 @@ def asset(path):
 
 def img(name, alt, sizes="100vw", cls="", eager=False, width=None):
     widths = IMAGES[name]
-    srcset = ", ".join(f"{asset(f'img/r/{name}-{w}.webp')} {w}w" for w in widths)
+    srcset = ", ".join(f"{asset(img_path(name, w))} {w}w" for w in widths)
     mid = widths[1] if len(widths) > 1 else widths[0]
     h = int(mid * (2 / 3)) if name in ("detail", "fastener") else int(mid * 9 / 16)
     load = 'fetchpriority="high"' if eager else 'loading="lazy" decoding="async"'
-    return (f'<img class="{cls}" src="{asset(f"img/r/{name}-{mid}.webp")}" srcset="{srcset}" sizes="{sizes}" '
+    return (f'<img class="{cls}" src="{asset(img_path(name, mid))}" srcset="{srcset}" sizes="{sizes}" '
             f'width="{mid}" height="{h}" alt="{alt}" {load}>')
 
 
@@ -113,7 +120,7 @@ def head(title, desc, image="hero"):
         "knowsLanguage": ["en", "es"],
         "description": desc,
     }
-    preload = f'<link rel="preload" as="image" href="{asset(f"img/r/{image}-{IMAGES[image][1]}.webp")}" imagesrcset="{", ".join(asset(f"img/r/{image}-{w}.webp") + f" {w}w" for w in IMAGES[image])}" imagesizes="100vw">' if image else ""
+    preload = f'<link rel="preload" as="image" href="{asset(img_path(image, IMAGES[image][1]))}" imagesrcset="{", ".join(asset(img_path(image, w)) + f" {w}w" for w in IMAGES[image])}" imagesizes="100vw">' if image else ""
     return f'''<!DOCTYPE html>
 <html lang="{LANG}">
 <head>
@@ -223,7 +230,7 @@ def footer(ridge_on="on-copper"):
     </div>
     <div class="footer-bottom">
       <span>© <span id="year">2026</span> Manifest Metals, LLC</span>
-      <span>{tr('Images on this site are illustrative renderings.', 'Las imágenes de este sitio son representaciones ilustrativas.')}</span>
+      <span>{tr('Project photos are our work. Other images are illustrative renderings.', 'Las fotos de proyectos son de nuestro trabajo. Las demás imágenes son representaciones ilustrativas.')}</span>
     </div>
   </div>
 </footer>
@@ -313,7 +320,7 @@ def systems(links=True):
     rp_link = f'<a class="link-arrow" href="{url("guide")}">{tr("Compare the two", "Compare los dos")}</a>' if links else ""
     return f'''<div class="systems">
   <article class="system reveal">
-    <div class="system-photo">{img("detail", tr("Close-up rendering of standing seam metal roof panels with raised seams", "Representación de cerca de paneles standing seam con costuras elevadas"), "(max-width: 960px) 100vw, 600px")}</div>
+    <div class="system-photo">{img("job2", tr("Standing seam metal roof panels and ridge, project photo", "Paneles y cumbrera de un techo standing seam, foto de proyecto"), "(max-width: 960px) 100vw, 600px")}</div>
     <div class="system-body">
       <span class="tag">{tr('Our recommendation for homes', 'Nuestra recomendación para casas')}</span>
       <h3>Standing seam</h3>
@@ -365,6 +372,33 @@ def visualizer():
       <p class="viz-note">{tr('Rendering. Colors are representative — ask us for the current color chart before you choose.', 'Representación. Los colores son aproximados — pídanos la carta de colores actual antes de elegir.')}</p>
     </div>
   </div>
+</section>
+'''
+
+
+def gallery():
+    shots = [
+        ("job3", tr("Standing seam", "Standing seam"), tr("Dark bronze standing seam metal roof on a large home, drone photo", "Techo standing seam bronce oscuro en una casa grande, foto con dron")),
+        ("job2", tr("Ridge & seams", "Cumbrera y costuras"), tr("Close-up of a standing seam ridge and panels", "Detalle de la cumbrera y paneles standing seam")),
+        ("job4", tr("Hips & valleys", "Limatesas y limahoyas"), tr("Standing seam roof with hips and valleys during installation", "Techo standing seam con limatesas y limahoyas durante la instalación")),
+        ("job5", tr("Complex roofline", "Techo complejo"), tr("Multi-plane standing seam roof on a new home", "Techo standing seam de varios planos en una casa nueva")),
+        ("job1", tr("From above", "Desde arriba"), tr("Overhead drone view of a standing seam roof", "Vista aérea con dron de un techo standing seam")),
+    ]
+    tiles = "".join(
+        f'<button type="button" class="g-tile{" g-big" if i == 0 else ""}" data-full="{asset(img_path(n, 1280))}" aria-label="{tr("View photo", "Ver foto")}: {cap}">'
+        f'{img(n, alt, "(max-width: 960px) 100vw, 50vw" if i == 0 else "(max-width: 960px) 50vw, 25vw")}<span class="g-cap mono">{cap}</span></button>'
+        for i, (n, cap, alt) in enumerate(shots)
+    )
+    return f'''<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{tr('Our work', 'Nuestro trabajo')}</p>
+      <h2>{tr('Standing seam, installed.', 'Standing seam, instalado.')}</h2>
+      <p>{tr('Real photos from one of our standing seam jobs — every hip, valley and ridge finished by our crew.', 'Fotos reales de uno de nuestros trabajos standing seam — cada limatesa, limahoya y cumbrera terminada por nuestro equipo.')}</p>
+    </div>
+    <div class="gallery reveal">{tiles}</div>
+  </div>
+  <dialog class="lightbox" aria-label="{tr('Photo', 'Foto')}"><button type="button" class="lb-close" aria-label="{tr('Close', 'Cerrar')}">×</button><img alt=""></dialog>
 </section>
 '''
 
@@ -428,9 +462,10 @@ def page_home():
         tr("Metal Roofing & Siding in El Paso, TX | Manifest Metals", "Techos de Metal en El Paso, TX | Manifest Metals"),
         tr("Standing seam and R-panel metal roofing and metal siding for El Paso homes and commercial buildings. Built for the sun. Se habla español.",
            "Techos de metal standing seam y R-panel y revestimiento de metal para casas y edificios comerciales en El Paso. Hechos para el sol."),
+        image="job3",
     ) + header() + f'''
 <section class="photo-hero home dark">
-  <div class="photo-hero-img kenburns">{img("hero", tr("Rendering of a stucco home with a charcoal standing seam metal roof at golden hour, mountains behind", "Representación de una casa de estuco con techo standing seam color carbón al atardecer, con montañas al fondo"), eager=True)}</div>
+  <div class="photo-hero-img kenburns hero-real">{img("job3", tr("Dark bronze standing seam metal roof under a blue sky with clouds", "Techo standing seam bronce oscuro bajo un cielo azul con nubes"), eager=True)}</div>
   <div class="container">
     <p class="eyebrow">{tr('Metal roofing & siding · El Paso, Texas', 'Techos y revestimiento de metal · El Paso, Texas')}</p>
     <h1>{tr('Metal roofs built for <em>El Paso sun.</em>', 'Techos de metal hechos para <em>el sol de El Paso.</em>')}</h1>
@@ -467,6 +502,8 @@ def page_home():
   </div>
 </section>
 
+{gallery()}
+
 {visualizer()}
 
 <section class="section sand">
@@ -489,7 +526,7 @@ def page_home():
     </div>
     <div class="grid g2">
       <a class="audience reveal" href="{url('residential')}">
-        <div class="audience-img">{img("dusk", tr("Rendering of a home with a metal roof at dusk, windows lit", "Representación de una casa con techo de metal al anochecer, con ventanas iluminadas"), "(max-width: 960px) 100vw, 50vw")}</div>
+        <div class="audience-img">{img("job5", tr("Standing seam metal roof on a new home", "Techo standing seam en una casa nueva"), "(max-width: 960px) 100vw, 50vw")}</div>
         <p class="eyebrow">{tr('For homeowners', 'Para propietarios')}</p>
         <h3>{tr("A roof you won't think about for decades.", "Un techo en el que no tendrá que pensar por décadas.")}</h3>
         <p>{tr('Standing seam and R-panel roofs and metal siding for El Paso homes, from the first measurement to final cleanup.', 'Techos standing seam y R-panel y revestimiento de metal para casas en El Paso, desde la primera medida hasta la limpieza final.')}</p>
@@ -581,6 +618,7 @@ def page_residential():
     <figure class="wide-photo reveal">{img("rpanel", tr("Rendering of a home with a Galvalume R-panel metal roof", "Representación de una casa con techo R-panel Galvalume"), "(max-width: 1240px) 100vw, 1180px")}<figcaption><span class="mono">R-panel · Galvalume</span>{tr('A classic, economical look — shown here on the same home.', 'Un estilo clásico y económico — en la misma casa.')}</figcaption></figure>
   </div>
 </section>
+{gallery()}
 {insurance()}
 {process("bone")}
 <section class="section-tight">
@@ -708,7 +746,7 @@ def page_guide():
 <section class="section">
   <div class="container">
     <div class="duo reveal">
-      <figure>{img("detail", tr("Rendering of standing seam panels", "Representación de paneles standing seam"), "(max-width: 960px) 100vw, 50vw")}<figcaption><span class="mono">Standing seam</span>{tr('Flat pans, raised seams, nothing exposed.', 'Paneles planos, costuras elevadas, nada expuesto.')}</figcaption></figure>
+      <figure>{img("job4", tr("Standing seam panels on a project roof", "Paneles standing seam en un techo de proyecto"), "(max-width: 960px) 100vw, 50vw")}<figcaption><span class="mono">Standing seam</span>{tr('Flat pans, raised seams, nothing exposed.', 'Paneles planos, costuras elevadas, nada expuesto.')}</figcaption></figure>
       <figure>{img("fastener", tr("Rendering of R-panel with exposed screws", "Representación de R-panel con tornillos expuestos"), "(max-width: 960px) 100vw, 50vw")}<figcaption><span class="mono">R-panel</span>{tr('Ribbed panels, screws through the face.', 'Paneles acanalados, tornillos en la cara.')}</figcaption></figure>
     </div>
   </div>
@@ -755,7 +793,7 @@ def page_about():
       <p class="lead">{tr("Close to 300 days of sun a year, a hard monsoon and spring hail. We think metal — and especially standing seam — is the best answer to El Paso weather, and we'd rather tell you why than sell you something.", "Casi 300 días de sol al año, un monzón fuerte y granizo en primavera. Creemos que el metal — y sobre todo el standing seam — es la mejor respuesta al clima de El Paso, y preferimos explicarle por qué antes que venderle algo.")}</p>
       <p>{tr("So we keep it simple: we measure, we explain the options in plain language, we put the quote in writing and we install it right.", "Por eso lo hacemos sencillo: medimos, le explicamos las opciones con claridad, le damos la cotización por escrito y lo instalamos bien.")}</p>
     </div>
-    <figure class="stack-photo reveal">{img("dusk", tr("Rendering of a home with a metal roof at dusk", "Representación de una casa con techo de metal al anochecer"), "(max-width: 960px) 100vw, 50vw")}</figure>
+    <figure class="stack-photo reveal">{img("job5", tr("Standing seam metal roof on a new home, project photo", "Techo standing seam en una casa nueva, foto de proyecto"), "(max-width: 960px) 100vw, 50vw")}</figure>
   </div>
 </section>
 <section class="section bone">
