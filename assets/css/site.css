@@ -664,3 +664,6 @@ h3 { font-size: clamp(1.25rem, 1.8vw, 1.5rem); letter-spacing: -0.01em; line-hei
   .g-big { grid-column: 1 / -1; grid-row: auto; }
   .g-tile { aspect-ratio: 16 / 9; }
 }
+.ep-grid { display: grid; grid-template-columns: 1.5fr 1fr; grid-template-rows: 1fr 1fr; gap: clamp(10px, 1.4vw, 16px); aspect-ratio: 16 / 7.5; }
+.ep-big { grid-row: span 2; }
+@media (max-width: 960px) { .ep-grid { grid-template-columns: 1fr 1fr; grid-template-rows: none; aspect-ratio: auto; } .ep-grid .g-tile { aspect-ratio: 16 / 9; } .ep-big { grid-column: 1 / -1; grid-row: auto; } }

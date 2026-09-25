@@ -57,10 +57,13 @@ for key, *_ in COLORS:
 # Real job photos (drone), assets/img/p/
 for n in range(1, 6):
     IMAGES[f"job{n}"] = (800, 1280)
+# El Paso re-roof (R-panel)
+for n in range(1, 4):
+    IMAGES[f"el{n}"] = (800, 1600)
 
 
 def img_path(name, w):
-    return f"img/{'p' if name.startswith('job') else 'r'}/{name}-{w}.webp"
+    return f"img/{'p' if name.startswith(('job', 'el')) else 'r'}/{name}-{w}.webp"
 
 LANG = "en"
 CURRENT = "home"
@@ -333,7 +336,7 @@ def systems(links=True):
     </div>
   </article>
   <article class="system reveal">
-    <div class="system-photo">{img("fastener", tr("Close-up rendering of R-panel metal roof with exposed screws and washers", "Representación de cerca de un techo R-panel con tornillos y arandelas expuestos"), "(max-width: 960px) 100vw, 600px")}</div>
+    <div class="system-photo">{img("el3", tr("R-panel metal re-roof on an El Paso home, project photo", "Techo R-panel en una casa de El Paso, foto de proyecto"), "(max-width: 960px) 100vw, 600px")}</div>
     <div class="system-body">
       <span class="tag neutral">{tr('Strong & economical', 'Resistente y económico')}</span>
       <h3>R-panel</h3>
@@ -399,6 +402,24 @@ def gallery():
     <div class="gallery reveal">{tiles}</div>
   </div>
   <dialog class="lightbox" aria-label="{tr('Photo', 'Foto')}"><button type="button" class="lb-close" aria-label="{tr('Close', 'Cerrar')}">×</button><img alt=""></dialog>
+</section>
+'''
+
+
+def el_paso_job():
+    return f'''<section class="section bone">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{tr('Re-roof · El Paso', 'Techo nuevo · El Paso')}</p>
+      <h2>{tr('A new R-panel roof, right here in El Paso.', 'Un techo R-panel nuevo, aquí en El Paso.')}</h2>
+      <p>{tr('A residential re-roof in a light color that reflects the sun — flashed around the swamp cooler, turbine vents and pipe boots.', 'Un techo residencial en un color claro que refleja el sol — con tapajuntas alrededor del cooler, las turbinas y los tubos de ventilación.')}</p>
+    </div>
+    <div class="ep-grid reveal">
+      <button type="button" class="g-tile ep-big" data-full="{asset(img_path("el3", 1600))}" aria-label="{tr('View photo', 'Ver foto')}">{img("el3", tr("R-panel roof on an El Paso home with palm trees and the city behind", "Techo R-panel en una casa de El Paso con palmeras y la ciudad al fondo"), "(max-width: 960px) 100vw, 60vw")}<span class="g-cap mono">El Paso, TX</span></button>
+      <button type="button" class="g-tile" data-full="{asset(img_path("el1", 1600))}" aria-label="{tr('View photo', 'Ver foto')}">{img("el1", tr("Drone view of an R-panel re-roof with a swamp cooler", "Vista con dron de un techo R-panel con cooler"), "(max-width: 960px) 100vw, 40vw")}<span class="g-cap mono">{tr('Swamp cooler & vents', 'Cooler y ventilas')}</span></button>
+      <button type="button" class="g-tile" data-full="{asset(img_path("el2", 1600))}" aria-label="{tr('View photo', 'Ver foto')}">{img("el2", tr("Overhead drone view of the finished R-panel roof", "Vista aérea del techo R-panel terminado"), "(max-width: 960px) 100vw, 40vw")}<span class="g-cap mono">{tr('From above', 'Desde arriba')}</span></button>
+    </div>
+  </div>
 </section>
 '''
 
@@ -502,6 +523,8 @@ def page_home():
   </div>
 </section>
 
+{el_paso_job()}
+
 {gallery()}
 
 {visualizer()}
@@ -584,9 +607,9 @@ def page_residential():
         tr("Residential Metal Roofing in El Paso | Manifest Metals", "Techos de Metal Residenciales en El Paso | Manifest Metals"),
         tr("Standing seam and R-panel metal roofs and metal siding for El Paso homes. Built for the sun. Se habla español.",
            "Techos de metal standing seam y R-panel y revestimiento de metal para casas en El Paso. Hechos para el sol."),
-        image="dusk",
+        image="el3",
     ) + header() + photo_hero(
-        "dusk", tr("Rendering of a home with a standing seam metal roof at dusk", "Representación de una casa con techo standing seam al anochecer"),
+        "el3", tr("R-panel metal roof on an El Paso home", "Techo R-panel en una casa de El Paso"),
         tr("Residential", "Residencial"),
         tr("Metal roofs and siding for El Paso homes.", "Techos y revestimiento de metal para casas en El Paso."),
         tr("Standing seam and R-panel roofing and metal siding — measured, quoted in writing and installed by our crew.", "Techos standing seam y R-panel y revestimiento de metal — medidos, cotizados por escrito e instalados por nuestro equipo."),
@@ -618,6 +641,7 @@ def page_residential():
     <figure class="wide-photo reveal">{img("rpanel", tr("Rendering of a home with a Galvalume R-panel metal roof", "Representación de una casa con techo R-panel Galvalume"), "(max-width: 1240px) 100vw, 1180px")}<figcaption><span class="mono">R-panel · Galvalume</span>{tr('A classic, economical look — shown here on the same home.', 'Un estilo clásico y económico — en la misma casa.')}</figcaption></figure>
   </div>
 </section>
+{el_paso_job()}
 {gallery()}
 {insurance()}
 {process("bone")}
