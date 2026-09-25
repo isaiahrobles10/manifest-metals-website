@@ -60,10 +60,13 @@ for n in range(1, 6):
 # El Paso re-roof (R-panel)
 for n in range(1, 4):
     IMAGES[f"el{n}"] = (800, 1600)
+# Galveston standing seam (crew at work)
+for n in range(1, 6):
+    IMAGES[f"gv{n}"] = (800, 1600)
 
 
 def img_path(name, w):
-    return f"img/{'p' if name.startswith(('job', 'el')) else 'r'}/{name}-{w}.webp"
+    return f"img/{'p' if name.startswith(('job', 'el', 'gv')) else 'r'}/{name}-{w}.webp"
 
 LANG = "en"
 CURRENT = "home"
@@ -385,7 +388,7 @@ def gallery():
         ("job2", tr("Ridge & seams", "Cumbrera y costuras"), tr("Close-up of a standing seam ridge and panels", "Detalle de la cumbrera y paneles standing seam")),
         ("job4", tr("Hips & valleys", "Limatesas y limahoyas"), tr("Standing seam roof with hips and valleys during installation", "Techo standing seam con limatesas y limahoyas durante la instalación")),
         ("job5", tr("Complex roofline", "Techo complejo"), tr("Multi-plane standing seam roof on a new home", "Techo standing seam de varios planos en una casa nueva")),
-        ("job1", tr("From above", "Desde arriba"), tr("Overhead drone view of a standing seam roof", "Vista aérea con dron de un techo standing seam")),
+        ("gv5", tr("Skylight & cupola", "Tragaluz y cúpula"), tr("Standing seam roof with skylight and cupola in Galveston", "Techo standing seam con tragaluz y cúpula en Galveston")),
     ]
     tiles = "".join(
         f'<button type="button" class="g-tile{" g-big" if i == 0 else ""}" data-full="{asset(img_path(n, 1280))}" aria-label="{tr("View photo", "Ver foto")}: {cap}">'
@@ -397,7 +400,7 @@ def gallery():
     <div class="section-head">
       <p class="eyebrow">{tr('Our work', 'Nuestro trabajo')}</p>
       <h2>{tr('Standing seam, installed.', 'Standing seam, instalado.')}</h2>
-      <p>{tr('Real photos from our standing seam work in the Houston–Galveston area — every hip, valley and ridge finished by our crew.', 'Fotos reales de nuestros trabajos standing seam en el área de Houston–Galveston — cada limatesa, limahoya y cumbrera terminada por nuestro equipo.')}</p>
+      <p>{tr('Real photos from our standing seam work in Houston and Galveston — every hip, valley and ridge finished by our crew.', 'Fotos reales de nuestros trabajos standing seam en Houston y Galveston — cada limatesa, limahoya y cumbrera terminada por nuestro equipo.')}</p>
     </div>
     <div class="gallery reveal">{tiles}</div>
   </div>
@@ -419,6 +422,30 @@ def el_paso_job():
       <button type="button" class="g-tile" data-full="{asset(img_path("el1", 1600))}" aria-label="{tr('View photo', 'Ver foto')}">{img("el1", tr("Drone view of an R-panel re-roof with a swamp cooler", "Vista con dron de un techo R-panel con cooler"), "(max-width: 960px) 100vw, 40vw")}<span class="g-cap mono">{tr('Swamp cooler & vents', 'Cooler y ventilas')}</span></button>
       <button type="button" class="g-tile" data-full="{asset(img_path("el2", 1600))}" aria-label="{tr('View photo', 'Ver foto')}">{img("el2", tr("Overhead drone view of the finished R-panel roof", "Vista aérea del techo R-panel terminado"), "(max-width: 960px) 100vw, 40vw")}<span class="g-cap mono">{tr('From above', 'Desde arriba')}</span></button>
     </div>
+  </div>
+</section>
+'''
+
+
+def galveston_job():
+    tiles = [
+        ("gv1", "ep-big", tr("Crew installing standing seam panels on a beachfront home in Galveston, Gulf of Mexico behind", "Equipo instalando paneles standing seam en una casa frente a la playa en Galveston, con el Golfo de México al fondo"), tr("Beachfront · Galveston", "Frente a la playa · Galveston")),
+        ("gv3", "", tr("Crew tied off on a multi-hip standing seam roof", "Equipo asegurado en un techo standing seam de varias limatesas"), tr("Tied off, every hip", "Asegurados, en cada limatesa")),
+        ("gv4", "", tr("Standing seam flashing around a cupola", "Tapajuntas standing seam alrededor de una cúpula"), tr("Cupola flashing", "Tapajuntas de cúpula")),
+    ]
+    html = "".join(
+        f'<button type="button" class="g-tile {c}" data-full="{asset(img_path(n, 1600))}" aria-label="{tr("View photo", "Ver foto")}: {cap}">'
+        f'{img(n, alt, "(max-width: 960px) 100vw, 60vw" if c else "(max-width: 960px) 100vw, 40vw")}<span class="g-cap mono">{cap}</span></button>'
+        for n, c, alt, cap in tiles
+    )
+    return f'''<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{tr('Standing seam · Galveston', 'Standing seam · Galveston')}</p>
+      <h2>{tr('On the roof, tied off, doing it right.', 'En el techo, asegurados, haciéndolo bien.')}</h2>
+      <p>{tr('A beachfront standing seam roof on the Gulf — hips, valleys, a skylight and a cupola, installed by our crew in full fall protection.', 'Un techo standing seam frente al Golfo — limatesas, limahoyas, un tragaluz y una cúpula, instalado por nuestro equipo con protección contra caídas.')}</p>
+    </div>
+    <div class="ep-grid reveal">{html}</div>
   </div>
 </section>
 '''
@@ -524,6 +551,8 @@ def page_home():
 </section>
 
 {el_paso_job()}
+
+{galveston_job()}
 
 {gallery()}
 
@@ -642,6 +671,7 @@ def page_residential():
   </div>
 </section>
 {el_paso_job()}
+{galveston_job()}
 {gallery()}
 {insurance()}
 {process("bone")}
@@ -709,6 +739,7 @@ def page_commercial():
     </div>
   </div>
 </section>
+{galveston_job()}
 <section class="section sand">
   <div class="container">
     <div class="section-head"><p class="eyebrow">{tr('Systems', 'Sistemas')}</p><h2>{tr('Standing seam and R-panel.', 'Standing seam y R-panel.')}</h2></div>
@@ -817,7 +848,7 @@ def page_about():
       <p class="lead">{tr("Close to 300 days of sun a year, a hard monsoon and spring hail. We think metal — and especially standing seam — is the best answer to El Paso weather, and we'd rather tell you why than sell you something.", "Casi 300 días de sol al año, un monzón fuerte y granizo en primavera. Creemos que el metal — y sobre todo el standing seam — es la mejor respuesta al clima de El Paso, y preferimos explicarle por qué antes que venderle algo.")}</p>
       <p>{tr("So we keep it simple: we measure, we explain the options in plain language, we put the quote in writing and we install it right.", "Por eso lo hacemos sencillo: medimos, le explicamos las opciones con claridad, le damos la cotización por escrito y lo instalamos bien.")}</p>
     </div>
-    <figure class="stack-photo reveal">{img("job5", tr("Standing seam metal roof on a new home, project photo", "Techo standing seam en una casa nueva, foto de proyecto"), "(max-width: 960px) 100vw, 50vw")}</figure>
+    <figure class="stack-photo reveal">{img("gv1", tr("Our crew installing a standing seam roof on a beachfront home", "Nuestro equipo instalando un techo standing seam frente a la playa"), "(max-width: 960px) 100vw, 50vw")}</figure>
   </div>
 </section>
 <section class="section bone">
