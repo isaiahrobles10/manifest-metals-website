@@ -108,7 +108,29 @@
     lb.addEventListener("click", function (e) { if (e.target === lb || e.target.closest(".lb-close")) lb.close(); });
   }
 
-  // Quote form (Web3Forms). The access key is set in _build/build.py.
+  // Hero slideshow of real jobs
+  var slides = document.querySelectorAll(".slides .slide");
+  var capText = document.querySelector(".slide-cap-text");
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (slides.length > 1 && !still) {
+    var cur = 0;
+    var load = function (fig) {
+      var im = fig.querySelector("img[data-src]");
+      if (im) { im.srcset = im.getAttribute("data-srcset"); im.src = im.getAttribute("data-src"); im.removeAttribute("data-src"); }
+    };
+    window.addEventListener("load", function () { slides.forEach(load); });
+    setInterval(function () {
+      if (document.hidden) return;
+      var next = (cur + 1) % slides.length;
+      load(slides[next]);
+      slides[cur].classList.remove("on");
+      slides[next].classList.add("on");
+      if (capText) capText.textContent = slides[next].getAttribute("data-cap");
+      cur = next;
+    }, 6500);
+  }
+
+  // Quote form. The endpoint is set in _build/build.py (FORM_ENDPOINT).
   var form = document.getElementById("quote-form");
   if (!form) return;
   var status = form.querySelector(".form-status");
@@ -128,28 +150,21 @@
       return;
     }
 
-    var key = form.getAttribute("data-key");
-    if (!key) {
-      status.textContent = msg("offline");
-      status.className = "form-status err";
-      return;
-    }
-
     var data = Object.fromEntries(new FormData(form).entries());
-    data.access_key = key;
+    if (data._honey) return;
     var button = form.querySelector("button[type=submit]");
     button.disabled = true;
     status.textContent = msg("sending");
     status.className = "form-status";
 
-    fetch("https://api.web3forms.com/submit", {
+    fetch(form.getAttribute("data-endpoint"), {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(data)
     })
       .then(function (r) { return r.json(); })
       .then(function (res) {
-        if (!res.success) throw new Error(res.message);
+        if (String(res.success) !== "true") throw new Error(res.message);
         form.reset();
         status.textContent = msg("ok");
         status.className = "form-status ok";
