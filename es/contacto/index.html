@@ -76,7 +76,7 @@
     <div class="panel reveal">
       <h2 class="form-title">Pida una cotización</h2>
       <p class="form-intro">Cuéntenos un poco sobre el proyecto. Le devolvemos la llamada.</p>
-      <form class="form" id="quote-form" novalidate data-endpoint="https://formsubmit.co/ajax/manifestmetalsep@gmail.com" data-msg-invalid="Por favor agregue su nombre, un teléfono y algunos detalles del proyecto." data-msg-sending="Enviando…" data-msg-ok="Gracias — lo recibimos. Le llamaremos pronto." data-msg-fail="Algo salió mal. Por favor llámenos al (915) 861-6436.">
+      <form class="form" id="quote-form" novalidate data-endpoint="https://formsubmit.co/ajax/manifestmetalsep@gmail.com" data-msg-invalid="Por favor agregue su nombre, un teléfono y algunos detalles del proyecto — y revise el correo si lo agregó." data-msg-sending="Enviando…" data-msg-ok="Gracias — lo recibimos. Le llamaremos pronto." data-msg-fail="Algo salió mal. Por favor llámenos al (915) 861-6436.">
         <input type="hidden" name="_subject" value="Nueva solicitud (español) — sitio de Manifest Metals">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
@@ -87,6 +87,16 @@
           <label class="choice"><input type="radio" name="project_type" value="Residential" checked><span>Casa</span></label>
           <label class="choice"><input type="radio" name="project_type" value="Commercial"><span>Comercial / licitación</span></label>
         </fieldset>
+        <div class="commercial-only" hidden>
+          <div class="row">
+            <div class="field"><label for="f-project">Nombre del proyecto</label><input class="input" id="f-project" name="project_name"></div>
+            <div class="field"><label for="f-company">Empresa</label><input class="input" id="f-company" name="company" autocomplete="organization"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="f-bid">Fecha límite de la cotización <span class="opt">(opcional)</span></label><input class="input" id="f-bid" name="bid_due" type="date"></div>
+            <div class="field"><label for="f-plans">Enlace a los planos <span class="opt">(opcional)</span></label><input class="input" id="f-plans" name="plans_link" type="url" inputmode="url" placeholder="https://"></div>
+          </div>
+        </div>
         <fieldset class="choices field">
           <legend>¿Qué necesita?</legend>
           <label class="choice"><input type="radio" name="service" value="New / replacement roof" checked><span>Techo nuevo</span></label>
@@ -101,7 +111,7 @@
         </div>
         <div class="row">
           <div class="field"><label for="f-email">Email <span class="opt">(opcional)</span></label><input class="input" id="f-email" name="email" type="email" autocomplete="email"></div>
-          <div class="field"><label for="f-area">Colonia o ciudad</label><input class="input" id="f-area" name="area" autocomplete="address-level2"></div>
+          <div class="field"><label for="f-area">Ubicación del proyecto</label><input class="input" id="f-area" name="area" autocomplete="address-level2"></div>
         </div>
         <div class="row">
           <div class="field"><label for="f-color">¿Color en mente? <span class="opt">(opcional)</span></label><select class="select" id="f-color" name="color"><option value="Not sure">Aún no sé</option><option value="Light Stone">Light Stone</option><option value="Polar White">Polar White</option><option value="Saddle Tan">Saddle Tan</option><option value="Burnished Slate">Burnished Slate</option><option value="Koko Brown">Koko Brown</option><option value="Black">Negro</option><option value="Charcoal Gray">Charcoal Gray</option><option value="Rustic Red">Rustic Red</option><option value="Evergreen">Evergreen</option><option value="Hawaiian Blue">Hawaiian Blue</option><option value="Acrylic Galvalume">Galvalume acrílico</option><option value="Copper Metallic">Cobre metálico</option></select></div>
@@ -110,7 +120,7 @@
         <div class="field"><label for="f-details">Detalles del proyecto</label><textarea class="textarea" id="f-details" name="details" required placeholder="Qué tiene el techo ahora, tamaño aproximado, cuándo, cualquier otro detalle…"></textarea></div>
         <button class="btn btn-lg btn-block" type="submit">Enviar solicitud</button>
         <p class="form-status" role="status" aria-live="polite"></p>
-        <p class="form-fine">Solo usaremos sus datos para responder sobre su proyecto.</p>
+        <p class="form-fine">Solo usaremos sus datos para responder sobre su proyecto. <a href="../../es/privacidad/">Privacidad</a></p>
       </form>
     </div>
   </div>
@@ -138,7 +148,7 @@
     </div>
     <div class="footer-bottom">
       <span>© <span id="year">2026</span> Manifest Metals, LLC</span>
-      <span>Las fotos de proyectos son de nuestro trabajo. Los diagramas y el visualizador son ilustraciones.</span>
+      <span>Las fotos de proyectos son de nuestro trabajo. Los diagramas y el visualizador son ilustraciones. <a href="../../es/privacidad/">Privacidad</a></span>
     </div>
   </div>
 </footer>

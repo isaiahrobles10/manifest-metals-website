@@ -467,12 +467,8 @@ h3 { font-size: clamp(1.25rem, 1.8vw, 1.5rem); letter-spacing: -0.01em; line-hei
 .notfound .code { font: 800 clamp(6rem, 18vw, 12rem)/1 var(--display); font-stretch: 120%; color: var(--copper); letter-spacing: -0.04em; }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 1080px) {
-  .nav a:not(.btn):not(.lang) { padding: 10px 8px; font-size: 14.5px; }
-  .footer-top { grid-template-columns: 1fr 1fr; }
-}
-
-@media (max-width: 960px) {
+/* The full nav needs ~1180px; below that it becomes the menu */
+@media (max-width: 1180px) {
   :root { --header-h: 66px; }
   .topbar ul li:nth-child(n+2) { display: none; }
   .menu-toggle { display: block; }
@@ -492,6 +488,13 @@ h3 { font-size: clamp(1.25rem, 1.8vw, 1.5rem); letter-spacing: -0.01em; line-hei
   .nav .lang { border: 0; border-bottom: 1px solid var(--line-dark); margin: 0; letter-spacing: 0 !important; }
   .nav .btn { margin-top: 24px; min-height: 56px; font-size: 17px; }
   body.menu-open { overflow: hidden; }
+}
+
+@media (max-width: 1080px) {
+  .footer-top { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 960px) {
 
   .g3, .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .split, .faq-wrap, .contact-grid { grid-template-columns: 1fr; }
@@ -759,3 +762,16 @@ h3 { font-size: clamp(1.25rem, 1.8vw, 1.5rem); letter-spacing: -0.01em; line-hei
 @media (max-width: 620px) {
   .steps.six { grid-template-columns: 1fr; }
 }
+
+/* ---------- v4: review fixes ---------- */
+.choose { padding-top: clamp(40px, 5vw, 64px); }
+.viz-cta { display: flex; justify-content: center; margin-top: 22px; }
+.btn-block + .btn-block { margin-top: 10px; }
+.commercial-only { display: grid; gap: 18px; }
+.commercial-only[hidden] { display: none; }
+.prose { max-width: 720px; }
+.prose h2 { font-size: clamp(1.3rem, 2vw, 1.6rem); margin: 36px 0 10px; }
+.prose h2:first-child { margin-top: 0; }
+.prose p { color: var(--text-soft); line-height: 1.7; }
+.prose a, .footer-bottom a, .form-fine a { text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 961px) and (max-width: 1180px) { .slide-cap { bottom: 28px; } }

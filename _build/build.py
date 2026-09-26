@@ -30,6 +30,7 @@ TEL = "+19158616436"
 EMAIL = "manifestmetalsep@gmail.com"
 # Quote form posts here. FormSubmit emails EMAIL a one-time activation link on the first submission.
 FORM_ENDPOINT = f"https://formsubmit.co/ajax/{EMAIL}"
+EPA_URL = "https://www.epa.gov/heatislands/using-cool-roofs-reduce-heat-islands"
 
 PAGES = {
     "home": {"en": "", "es": "es/"},
@@ -40,6 +41,7 @@ PAGES = {
     "guide": {"en": "standing-seam-vs-r-panel/", "es": "es/standing-seam-vs-r-panel/"},
     "about": {"en": "about/", "es": "es/nosotros/"},
     "contact": {"en": "contact/", "es": "es/contacto/"},
+    "privacy": {"en": "privacy/", "es": "es/privacidad/"},
 }
 
 AREAS = ["El Paso", "Horizon City", "Socorro", "San Elizario", "Clint", "Fabens", "Canutillo", "Vinton", "Anthony, TX"]
@@ -116,6 +118,10 @@ def quote_btn(cls="btn btn-lg"):
 def brand(size=""):
     return (f'<span class="brand-mark{size}">{emblem("logo-svg", "")}</span>'
             '<span class="brand-text"><span class="brand-name">Manifest</span><span class="brand-sub">Metals</span></span>')
+
+
+def epa(text):
+    return f'<a href="{EPA_URL}" rel="noopener">{text}</a>'
 
 
 def points(items):
@@ -274,7 +280,7 @@ def footer(ridge_on="on-brand"):
     </div>
     <div class="footer-bottom">
       <span>© <span id="year">2026</span> Manifest Metals, LLC</span>
-      <span>{tr('Project photos are our work. Diagrams and the color visualizer are illustrations.', 'Las fotos de proyectos son de nuestro trabajo. Los diagramas y el visualizador son ilustraciones.')}</span>
+      <span>{tr('Project photos are our work. Diagrams and the color visualizer are illustrations.', 'Las fotos de proyectos son de nuestro trabajo. Los diagramas y el visualizador son ilustraciones.')} <a href="{url('privacy')}">{tr('Privacy', 'Privacidad')}</a></span>
     </div>
   </div>
 </footer>
@@ -355,8 +361,8 @@ def process(bg=""):
 def lifespan_chart():
     rows = [
         (tr("Standing seam, 24 ga steel", "Standing seam, acero calibre 24"), tr("40–70 yrs", "40–70 años"), 40, 70, ""),
-        (tr("Painted corrugated, 29 ga", "Corrugado pintado, calibre 29"), tr("25–40 yrs", "25–40 años"), 25, 40, "muted"),
-        (tr("Exposed-fastener washers", "Arandelas de tornillos expuestos"), tr("start failing 10–15", "fallan a los 10–15"), 10, 15, "warn"),
+        (tr("Asphalt shingles, in our sun", "Tejas de asfalto, con nuestro sol"), tr("often 15–20", "con frecuencia 15–20"), 15, 20, "muted"),
+        (tr("Screw washers on exposed-fastener panels", "Arandelas de tornillos en paneles expuestos"), tr("can start failing 10–15", "pueden fallar a los 10–15"), 10, 15, "warn"),
     ]
     bars = "".join(
         f'''<div class="bar-row"><div class="bar-label"><span>{name}</span><span>{val}</span></div>
@@ -366,27 +372,27 @@ def lifespan_chart():
     axis = "".join(f"<span>{n}</span>" for n in range(0, 71, 10))
     return f'''<div class="chart-card reveal">
   <h3>{tr('Typical service life', 'Vida útil típica')}</h3>
-  <p class="sub">{tr('Years, by system. In our sun, how a roof is fastened matters as much as the metal.', 'Años, por sistema. Con nuestro sol, cómo se fija el techo importa tanto como el metal.')}</p>
+  <p class="sub">{tr('Years. In our sun, how a roof is fastened matters as much as the metal.', 'Años. Con nuestro sol, cómo se fija el techo importa tanto como el metal.')}</p>
   <div class="bars">{bars}</div>
   <div class="bar-axis" aria-hidden="true">{axis}</div>
-  <p class="chart-note">{tr('Typical industry ranges. Actual life depends on the product, finish and installation.', 'Rangos típicos de la industria. La vida real depende del producto, el acabado y la instalación.')}</p>
+  <p class="chart-note">{tr('Typical industry ranges, not a warranty. Washers are a maintenance item — an R-panel roof itself lasts decades when its fasteners are kept up. Actual life depends on the product, finish and installation.', 'Rangos típicos de la industria, no una garantía. Las arandelas son mantenimiento — un techo R-panel dura décadas si se cuidan sus tornillos. La vida real depende del producto, el acabado y la instalación.')}</p>
 </div>'''
 
 
-def systems(links=True):
+def systems(links=True, homes=True):
     ss_link = f'<a class="link-arrow" href="{url("guide")}">Standing seam vs R-panel</a>' if links else ""
     rp_link = f'<a class="link-arrow" href="{url("guide")}">{tr("Compare the two", "Compare los dos")}</a>' if links else ""
     return f'''<div class="systems">
   <article class="system reveal">
     <div class="system-photo">{img("job2", tr("Standing seam metal roof panels meeting at a ridge, project photo", "Paneles standing seam que se unen en una cumbrera, foto de proyecto"), "(max-width: 960px) 100vw, 600px")}</div>
     <div class="system-body">
-      <span class="tag">{tr('Our recommendation for homes', 'Nuestra recomendación para casas')}</span>
+      <span class="tag">{tr('Our recommendation for homes', 'Nuestra recomendación para casas') if homes else tr('Concealed fastener', 'Fijación oculta')}</span>
       <h3>Standing seam</h3>
       <dl class="specs"><div><dt>{tr('Steel', 'Acero')}</dt><dd>24 ga</dd></div><div><dt>{tr('Seam', 'Costura')}</dt><dd>1-3/4&quot; snap-lock</dd></div><div><dt>{tr('Panel', 'Panel')}</dt><dd>{tr('18&quot; wide', '18&quot; de ancho')}</dd></div></dl>
       <ul class="checks">
-        <li>{tr('Concealed clips — no exposed screws for the sun to attack', 'Clips ocultos — sin tornillos expuestos que el sol pueda dañar')}</li>
+        <li>{tr('Concealed clips — no screws through the panel face', 'Clips ocultos — sin tornillos en la cara del panel')}</li>
         <li>{tr('Striated pans that hide oil-canning on the flat of the panel', 'Paneles estriados que disimulan las ondulaciones en la parte plana')}</li>
-        <li>{tr('40–70 year typical service life', 'Vida útil típica de 40 a 70 años')}</li>
+        <li>{tr('40–70 year typical service life (industry range)', 'Vida útil típica de 40 a 70 años (rango de la industria)')}</li>
       </ul>
       {ss_link}
     </div>
@@ -412,7 +418,7 @@ def systems(links=True):
 def visualizer():
     swatches = "".join(
         f'<button type="button" class="swatch{" active" if i == 0 else ""}" aria-pressed="{"true" if i == 0 else "false"}" '
-        f'data-src="{asset(img_path("k-" + key, 1600))}" data-srcset="{srcset("k-" + key)}" data-name="{tr(en, es)}">'
+        f'data-src="{asset(img_path("k-" + key, 1600))}" data-srcset="{srcset("k-" + key)}" data-name="{tr(en, es)}" data-value="{en}">'
         f'<span class="chip" style="--c:{hexc}"></span><span class="swatch-name">{tr(en, es)}'
         f'{"<small>Premium</small>" if key == "copper-metallic" else ""}</span></button>'
         for i, (key, en, es, hexc) in enumerate(COLORS)
@@ -431,6 +437,7 @@ def visualizer():
         <span class="viz-label"><span class="chip" style="--c:{hex0}"></span><span class="viz-name">{tr(en0, es0)}</span></span>
       </div>
       <div class="swatches" role="group" aria-label="{tr('Roof colors', 'Colores de techo')}">{swatches}</div>
+      <div class="viz-cta"><a class="btn" id="viz-quote" data-base="{url("contact")}" href="{url("contact")}?color={en0.replace(" ", "+")}#quote">{tr("Get a quote in", "Cotizar en")} <span class="viz-name-cta">{tr(en0, es0)}</span></a></div>
       <p class="viz-note">{tr('Illustration — screen colors are approximate. We bring physical color chips to your site visit. In-stock colors usually start sooner than special orders. Standing seam comes in its own premium color range — ask us.', 'Ilustración — los colores en pantalla son aproximados. Llevamos muestras físicas a la visita. Los colores en existencia normalmente empiezan antes que los pedidos especiales. El standing seam tiene su propia gama de colores — pregúntenos.')}</p>
     </div>
   </div>
@@ -442,12 +449,12 @@ def insurance():
     return f'''<section class="section-tight">
   <div class="container">
     <div class="insure reveal">
-      <div class="insure-law"><span class="mono">Tex. Ins. Code</span><strong>§2253.002</strong></div>
+      <div class="insure-law"><span class="mono">UL 2218</span><strong>{tr('Class 4', 'Clase 4')}</strong></div>
       <div>
         <p class="eyebrow">{tr('Hail & insurance', 'Granizo y seguro')}</p>
-        <h2>{tr('A Class 4 roof can lower your insurance.', 'Un techo Clase 4 puede bajar su seguro.')}</h2>
-        <p>{tr("Texas law requires home insurers to offer a premium discount for roofs rated UL 2218 Class 4 for impact resistance. Many metal roof systems carry that rating. Each insurer sets its own discount, and after installation the contractor completes TDI form PC068 for your policy.", "La ley de Texas exige que las aseguradoras ofrezcan un descuento en la prima para techos con clasificación UL 2218 Clase 4 de resistencia al impacto. Muchos sistemas de techo de metal tienen esa clasificación. Cada aseguradora fija su descuento, y después de la instalación el contratista llena el formulario PC068 del TDI para su póliza.")}</p>
-        <p class="insure-ask">{tr('Ask us which systems qualify — then ask your insurer what they credit.', 'Pregúntenos qué sistemas califican — y luego pregunte a su aseguradora cuánto descuentan.')}</p>
+        <h2>{tr('An impact-rated roof may lower your insurance.', 'Un techo resistente al impacto podría bajar su seguro.')}</h2>
+        <p>{tr("In Texas, home insurers offer discounts for eligible roofs rated UL 2218 Class 4 for impact resistance. Whether yours qualifies depends on the exact tested system, how it's installed and your policy — each insurer sets its own rules and amount.", "En Texas, las aseguradoras ofrecen descuentos para techos elegibles con clasificación UL 2218 Clase 4 de resistencia al impacto. Si el suyo califica depende del sistema probado, de cómo se instala y de su póliza — cada aseguradora fija sus reglas y su monto.")}</p>
+        <p class="insure-ask">{tr('Confirm the system and requirements with your insurer before installation — we will give you the product details they ask for.', 'Confirme el sistema y los requisitos con su aseguradora antes de instalar — le damos los datos del producto que le pidan.')}</p>
       </div>
     </div>
   </div>
@@ -481,7 +488,7 @@ def case(anchor, photos, eyebrow, title, facts, scope, extra="", link="", h="h3"
 
 
 # Project write-ups (never a customer's name or street address)
-def project_elpaso(h="h3"):
+def project_elpaso(h="h3", compact=False):
     hs = "h" + str(int(h[1]) + 1)
     story = f'''<div class="story">
       <{hs}>{tr('The color decision', 'La decisión del color')}</{hs}>
@@ -501,8 +508,9 @@ def project_elpaso(h="h3"):
          tr("R-panel over the main house, front porch and entry", "R-panel en la casa, el porche y la entrada"),
          tr("Color-matched ridge caps, rake and edge trim, sidewall and transition flashing", "Cumbreras, remates y tapajuntas del mismo color"),
          tr("New seals on all 8 pipes and vents, plus a new 12&quot; turbine vent", "Sellos nuevos en los 8 tubos y ventilas, y una turbina nueva de 12&quot;"),
-         tr("Permit, daily cleanup, a magnet sweep of the yard and a final walk with the family", "Permiso, limpieza diaria, barrido con imán y recorrido final con la familia")],
-        extra=story, h=h,
+         tr("Permit, daily cleanup, a magnet sweep of the yard and a final walk with the family", "Permiso, limpieza diaria, barrido con imán y recorrido final con la familia")][::2 if compact else 1],
+        extra="" if compact else story, h=h,
+        link=f'<a class="link-arrow" href="{url("projects", anchor="#el-paso")}">{tr("The full project", "El proyecto completo")}</a>' if compact else "",
     )
 
 
@@ -568,48 +576,19 @@ def inspection(bg="bone"):
 
 # ---------------------------------------------------------------- pages
 
-HOME_SLIDES = [
-    ("el3", "El Paso, TX · R-panel", "El Paso, TX · R-panel"),
-    ("gv1", "Galveston, TX · Standing seam", "Galveston, TX · Standing seam"),
-    ("job3", "Houston area · Standing seam", "Área de Houston · Standing seam"),
-]
-
-
 def page_home():
-    alt = tr("Metal roof installed by Manifest Metals", "Techo de metal instalado por Manifest Metals")
-    slides = "".join(
-        f'<figure class="slide{" on" if i == 0 else ""}" data-cap="{tr(en, es)}">'
-        + (img(n, alt, eager=True) if i == 0 else
-           f'<img data-src="{asset(img_path(n, IMAGES[n][1]))}" data-srcset="{srcset(n)}" sizes="100vw" alt="{alt}" width="1600" height="900">')
-        + "</figure>"
-        for i, (n, en, es) in enumerate(HOME_SLIDES)
-    )
-    facts = [
-        ("~300", tr("sunny days a year in El Paso — the sun is what ages a roof here", "días de sol al año en El Paso — el sol es lo que envejece un techo aquí")),
-        ("26<small>/24 ga</small>", tr("steel — R-panel in 26 gauge, standing seam in 24", "acero — R-panel calibre 26, standing seam calibre 24")),
-        ("0", tr("exposed screws on a standing seam roof", "tornillos expuestos en un techo standing seam")),
-        ("ES<small>/EN</small>", tr("Se habla español — call and ask for Spanish", "Se habla español — llame y le atendemos en español")),
-    ]
-    facts_html = "".join(f'<div class="fact"><span class="fact-big">{b}</span><p>{t}</p></div>' for b, t in facts)
-    sun_points = [
-        ("sun", tr("Screws are the weak point", "Los tornillos son el punto débil"), tr("On exposed-fastener roofs, rubber washers break down in the sun and start failing at 10–15 years.", "En los techos con tornillos expuestos, las arandelas de hule se deterioran con el sol y empiezan a fallar a los 10–15 años.")),
-        ("shield", tr("Standing seam hides them", "El standing seam los esconde"), tr("Concealed clips sit under the seam — nothing exposed in the panel face for UV to break down.", "Los clips ocultos quedan bajo la costura — nada expuesto en la cara del panel que el sol pueda deteriorar.")),
-        ("leaf", tr("Cooler on the hottest days", "Más fresco en los días más calurosos"), tr("According to the EPA, reflective cool roofs can cut peak cooling demand 11–27% in air-conditioned homes.", "Según la EPA, los techos frescos reflectantes pueden reducir la demanda máxima de enfriamiento entre 11% y 27% en casas con aire acondicionado.")),
-        ("storm", tr("Ready for monsoon and hail", "Listo para el monzón y el granizo"), tr("Hail season runs spring through the July–September monsoon. Interlocking metal panels shed hard rain and stand up to wind.", "La temporada de granizo va de la primavera al monzón de julio a septiembre. Los paneles de metal entrelazados desalojan la lluvia y resisten el viento.")),
+    rules = [
+        ("doc", tr("Photos before prices", "Primero fotos, después precio"), tr("Every roof is inspected with a checklist for its type and photographed before we put a number on it.", "Cada techo se inspecciona con una lista para su tipo y se fotografía antes de darle un precio.")),
+        ("calendar", tr("Quoted in writing", "Cotización por escrito"), tr("Priced at the office, never guessed on the roof — system, color and scope spelled out.", "Se calcula en la oficina, nunca se adivina en el techo — sistema, color y alcance por escrito.")),
+        ("shield", tr("Nobody goes up alone", "Nadie sube solo"), tr("A standing rule on every job: no one from our crew is ever on a roof by themselves.", "Una regla en cada trabajo: nadie de nuestro equipo sube solo a un techo.")),
     ]
     faqs = [
         (tr("How long does a metal roof last in El Paso?", "¿Cuánto dura un techo de metal en El Paso?"),
-         tr("It depends on the system. A 24-gauge standing seam roof typically lasts 40–70 years; painted 29-gauge corrugated, 25–40. In our sun, how the panels are fastened matters as much as the metal — exposed-fastener washers start failing at 10–15 years.",
-            "Depende del sistema. Un techo standing seam calibre 24 dura típicamente de 40 a 70 años; la lámina corrugada pintada calibre 29, de 25 a 40. Con nuestro sol, cómo se fijan los paneles importa tanto como el metal — las arandelas de los tornillos expuestos empiezan a fallar a los 10–15 años.")),
+         tr("It depends on the system and how it's installed. A 24-gauge standing seam roof typically lasts 40–70 years. On exposed-fastener roofs like R-panel, the panel lasts decades but the screw washers are a maintenance item — in our sun they can start failing at 10–15 years.",
+            "Depende del sistema y de la instalación. Un techo standing seam calibre 24 dura típicamente de 40 a 70 años. En techos con tornillos expuestos como el R-panel, el panel dura décadas pero las arandelas son mantenimiento — con nuestro sol pueden fallar a los 10–15 años.")),
         (tr("Can you replace my shingle roof with metal?", "¿Pueden cambiar mi techo de tejas por metal?"),
-         tr("Yes. On our El Paso conversion we tore the shingles off to the bare deck, covered the roof in self-sealing membrane and installed 26-gauge R-panel.",
-            "Sí. En nuestro cambio en El Paso quitamos las tejas hasta la cubierta, cubrimos todo con membrana autoadherible e instalamos R-panel calibre 26.")),
-        (tr("Can a metal roof lower my home insurance?", "¿Un techo de metal puede bajar mi seguro?"),
-         tr("It can. Texas requires home insurers to offer a discount for roofs rated UL 2218 Class 4 for impact resistance, and many metal roof systems carry that rating. Each insurer sets its own amount — ask us which systems qualify, then ask your insurer.",
-            "Puede. Texas exige que las aseguradoras ofrezcan un descuento para techos con clasificación UL 2218 Clase 4, y muchos sistemas de metal la tienen. Cada aseguradora fija su monto — pregúntenos qué sistemas califican y luego consulte a su aseguradora.")),
-        (tr("What colors can I choose?", "¿Qué colores puedo elegir?"),
-         tr("Twelve on our R-panel chart — try them in the color visualizer above. In-stock colors usually start sooner than special orders, and we bring physical chips to your site visit.",
-            "Doce en nuestra carta de R-panel — pruébelos en el visualizador de arriba. Los colores en existencia normalmente empiezan antes que los pedidos especiales, y llevamos muestras físicas a la visita.")),
+         tr(f'Yes. On our El Paso conversion we tore the shingles off to the bare deck, covered the roof in self-sealing membrane and installed 26-gauge R-panel. <a href="{url("shingle")}">How a conversion works</a>.',
+            f'Sí. En nuestro cambio en El Paso quitamos las tejas hasta la cubierta, cubrimos todo con membrana autoadherible e instalamos R-panel calibre 26. <a href="{url("shingle")}">Cómo funciona el cambio</a>.')),
         (tr("How much does a metal roof cost?", "¿Cuánto cuesta un techo de metal?"),
          tr("Every roof is different — size, pitch, what's on it now and which system you choose. We inspect, photograph and measure, then give you a clear written quote.",
             "Cada techo es diferente — tamaño, inclinación, lo que tiene ahora y el sistema que elija. Inspeccionamos, fotografiamos y medimos, y le damos una cotización clara por escrito.")),
@@ -622,7 +601,7 @@ def page_home():
         image="el3", extra_ld=[faq_ld(faqs)],
     ) + header() + f'''
 <section class="photo-hero home dark">
-  <div class="photo-hero-img slides">{slides}</div>
+  <div class="photo-hero-img">{img("el3", tr("Light Stone R-panel metal roof installed by Manifest Metals on an El Paso home", "Techo R-panel Light Stone instalado por Manifest Metals en una casa de El Paso"), eager=True)}</div>
   <div class="container">
     <p class="eyebrow">{tr('Metal roofing & siding · El Paso, Texas', 'Techos y revestimiento de metal · El Paso, Texas')}</p>
     <h1>{tr('Metal roofs, <em>installed right.</em>', 'Techos de metal, <em>bien instalados.</em>')}</h1>
@@ -636,11 +615,31 @@ def page_home():
       <li>{icon('pin')}{tr('Locally owned', 'Negocio local')}</li>
       <li>{icon('building')}{tr('Residential & commercial', 'Residencial y comercial')}</li>
     </ul>
-    <p class="slide-cap mono"><span class="dot" aria-hidden="true"></span><span class="slide-cap-text">{tr(HOME_SLIDES[0][1], HOME_SLIDES[0][2])}</span> · {tr('a real Manifest job', 'un trabajo real de Manifest')}</p>
+    <p class="slide-cap mono"><span class="dot" aria-hidden="true"></span>{tr('El Paso, TX · R-panel · a real Manifest job', 'El Paso, TX · R-panel · un trabajo real de Manifest')}</p>
   </div>
 </section>
 
-<div class="facts"><div class="container"><div class="facts-inner reveal">{facts_html}</div></div></div>
+<section class="section-tight choose">
+  <div class="container">
+    <h2 class="visually-hidden">{tr('Choose your project', 'Elija su proyecto')}</h2>
+    <div class="grid g2">
+      <a class="audience reveal" href="{url('residential')}">
+        <div class="audience-img">{img("job5", tr("Standing seam roof on a new home", "Techo standing seam en una casa nueva"), "(max-width: 960px) 100vw, 50vw")}</div>
+        <p class="eyebrow">{tr('For homeowners', 'Para propietarios')}</p>
+        <h3>{tr("A metal roof for your home.", "Un techo de metal para su casa.")}</h3>
+        <p>{tr('Standing seam and R-panel roofs, shingle-to-metal conversions, metal siding and carports.', 'Techos standing seam y R-panel, cambios de tejas a metal, revestimiento de metal y cocheras.')}</p>
+        <span class="link-arrow">{tr('Residential roofing', 'Techos residenciales')}</span>
+      </a>
+      <a class="audience reveal" href="{url('commercial')}">
+        <div class="audience-img">{img("gv3", tr("Crew tied off on a standing seam roof", "Equipo asegurado en un techo standing seam"), "(max-width: 960px) 100vw, 50vw")}</div>
+        <p class="eyebrow">{tr('For GCs, architects & owners', 'Para contratistas, arquitectos y propietarios')}</p>
+        <h3>{tr('Put us on your bid list.', 'Inclúyanos en su lista de licitantes.')}</h3>
+        <p>{tr("Metal wall panel and roofing scopes for commercial projects. Send plans and specs and we'll get you a number.", "Paneles de pared y techos de metal para proyectos comerciales. Envíe planos y especificaciones y le damos un precio.")}</p>
+        <span class="link-arrow">{tr('Commercial', 'Comercial')}</span>
+      </a>
+    </div>
+  </div>
+</section>
 
 <section class="section">
   <div class="container">
@@ -648,25 +647,20 @@ def page_home():
       <p class="eyebrow">{tr('Featured project', 'Proyecto destacado')}</p>
       <h2>{tr('A shingle-to-metal conversion, right here in El Paso.', 'Un cambio de tejas a metal, aquí en El Paso.')}</h2>
     </div>
-    {project_elpaso()}
+    {project_elpaso(compact=True)}
+    <p class="fine-center"><a class="link-arrow" href="{url('projects')}">{tr('More of our work — Galveston and the Houston area', 'Más de nuestro trabajo — Galveston y el área de Houston')}</a></p>
   </div>
 </section>
 
 <section class="section bone">
   <div class="container">
-    <div class="section-head wide">
-      <p class="eyebrow">{tr('Built for the desert', 'Hecho para el desierto')}</p>
-      <h2>{tr('In El Paso, the enemy is the sun — not the rain.', 'En El Paso, el enemigo es el sol — no la lluvia.')}</h2>
-      <p>{tr('We get under 10 inches of rain a year and close to 300 days of sun. What wears a roof out here is UV, day after day — and the first thing it attacks is exposed fasteners.', 'Aquí llueven menos de 10 pulgadas al año y hay casi 300 días de sol. Lo que desgasta un techo es el sol, día tras día — y lo primero que ataca son los tornillos expuestos.')}</p>
+    <div class="section-head">
+      <p class="eyebrow">{tr('Why Manifest', 'Por qué Manifest')}</p>
+      <h2>{tr('The careful way, on every roof.', 'Con cuidado, en cada techo.')}</h2>
     </div>
-    <div class="split top sun-split">
-      <ul class="points reveal">{points(sun_points)}</ul>
-      {lifespan_chart()}
-    </div>
+    <ul class="points rules reveal">{points(rules)}</ul>
   </div>
 </section>
-
-{visualizer()}
 
 <section class="section sand">
   <div class="container">
@@ -678,50 +672,7 @@ def page_home():
   </div>
 </section>
 
-{inspection()}
-
-<section class="section">
-  <div class="container">
-    <div class="section-head wide">
-      <p class="eyebrow">{tr('Our work', 'Nuestro trabajo')}</p>
-      <h2>{tr('From El Paso to the Gulf Coast.', 'De El Paso a la costa del Golfo.')}</h2>
-      <p>{tr('Real photos from real Manifest jobs — no stock photography.', 'Fotos reales de trabajos reales de Manifest — nada de fotos de catálogo.')}</p>
-    </div>
-    <div class="grid g3 proj-cards">
-      <a class="proj-card reveal" href="{url('projects', anchor='#el-paso')}">{img("el1", tr("R-panel roof in El Paso", "Techo R-panel en El Paso"), "(max-width: 960px) 100vw, 33vw")}<span class="pc-body"><span class="mono">El Paso, TX</span><strong>{tr('Shingle to R-panel', 'De tejas a R-panel')}</strong></span></a>
-      <a class="proj-card reveal" href="{url('projects', anchor='#galveston')}">{img("gv5", tr("Standing seam roof with a skylight and cupola in Galveston", "Techo standing seam con tragaluz y cúpula en Galveston"), "(max-width: 960px) 100vw, 33vw")}<span class="pc-body"><span class="mono">Galveston, TX</span><strong>{tr('Beachfront standing seam', 'Standing seam frente al mar')}</strong></span></a>
-      <a class="proj-card reveal" href="{url('projects', anchor='#houston')}">{img("job4", tr("Standing seam hips and valleys", "Limatesas y limahoyas standing seam"), "(max-width: 960px) 100vw, 33vw")}<span class="pc-body"><span class="mono">{tr('Houston area', 'Área de Houston')}</span><strong>{tr('Standing seam, new build', 'Standing seam, obra nueva')}</strong></span></a>
-    </div>
-  </div>
-</section>
-
-{insurance()}
-
-<section class="section">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">{tr('Who we work for', 'Para quién trabajamos')}</p>
-      <h2>{tr('Homeowners and builders.', 'Propietarios y constructores.')}</h2>
-    </div>
-    <div class="grid g2">
-      <a class="audience reveal" href="{url('residential')}">
-        <div class="audience-img">{img("job5", tr("Standing seam roof on a new home", "Techo standing seam en una casa nueva"), "(max-width: 960px) 100vw, 50vw")}</div>
-        <p class="eyebrow">{tr('For homeowners', 'Para propietarios')}</p>
-        <h3>{tr("A roof you won't think about for decades.", "Un techo en el que no tendrá que pensar por décadas.")}</h3>
-        <p>{tr('Standing seam and R-panel roofs, shingle-to-metal conversions, metal siding and carports.', 'Techos standing seam y R-panel, cambios de tejas a metal, revestimiento de metal y cocheras.')}</p>
-        <span class="link-arrow">{tr('Residential roofing', 'Techos residenciales')}</span>
-      </a>
-      <a class="audience reveal" href="{url('commercial')}">
-        <div class="audience-img">{img("gv3", tr("Crew tied off on a standing seam roof", "Equipo asegurado en un techo standing seam"), "(max-width: 960px) 100vw, 50vw")}</div>
-        <p class="eyebrow">{tr('For GCs & architects', 'Para contratistas y arquitectos')}</p>
-        <h3>{tr('Put us on your bid list.', 'Inclúyanos en su lista de licitantes.')}</h3>
-        <p>{tr("Metal wall panel and roofing packages for commercial projects. Send plans and specs and we'll get you a number.", "Paquetes de paneles de pared y techos de metal para proyectos comerciales. Envíe planos y especificaciones y le damos un precio.")}</p>
-        <span class="link-arrow">{tr('Commercial', 'Comercial')}</span>
-      </a>
-    </div>
-  </div>
-</section>
-
+{visualizer()}
 {process("bone")}
 {faq_block(faqs)}
 {cta_band()}
@@ -730,18 +681,18 @@ def page_home():
 
 def page_residential():
     what = [
-        ("roof", tr("Standing seam roofs", "Techos standing seam"), tr("24 ga, concealed clips and clean lines — the longest-lasting answer to desert sun.", "Calibre 24, clips ocultos y líneas limpias — la opción que más dura bajo el sol del desierto.")),
+        ("roof", tr("Standing seam roofs", "Techos standing seam"), tr("24 ga, concealed clips and clean lines — built for a long life under desert sun.", "Calibre 24, clips ocultos y líneas limpias — hecho para durar bajo el sol del desierto.")),
         ("home", tr("R-panel roofs", "Techos R-panel"), tr("A strong, economical 26 ga metal roof for homes, casitas and outbuildings.", "Un techo de metal calibre 26 resistente y económico para casas, casitas y bodegas.")),
-        ("sun", tr("Shingle-to-metal conversions", "Cambios de tejas a metal"), tr("Tear-off to the deck, new membrane, new metal — the upgrade that ends reroofing every 15–20 years.", "Retiro hasta la cubierta, membrana nueva, metal nuevo — el cambio que termina con retejar cada 15–20 años.")),
+        ("sun", tr("Shingle-to-metal conversions", "Cambios de tejas a metal"), tr("Tear-off to the deck, new membrane, new metal — a longer-lasting alternative to reroofing with shingles.", "Retiro hasta la cubierta, membrana nueva, metal nuevo — una alternativa más duradera que volver a poner tejas.")),
         ("wall", tr("Metal siding", "Revestimiento de metal"), tr("Metal wall panels for homes, shops and garages — clean lines that hold up to sun and wind.", "Paneles de pared de metal para casas, talleres y garajes — líneas limpias que aguantan el sol y el viento.")),
         ("building", tr("Carports & patio covers", "Cocheras y techos de patio"), tr("Metal roofs for carports, patio covers and outbuildings — the right panel for the slope.", "Techos de metal para cocheras, patios y bodegas — el panel correcto para la pendiente.")),
         ("wrench", tr("Metal roof repairs", "Reparaciones de techos de metal"), tr("Failed fasteners, leaks and flashing — inspected, documented and priced in writing.", "Tornillos fallados, goteras y tapajuntas — inspeccionados, documentados y cotizados por escrito.")),
     ]
     why = [
-        ("sun", tr("Built for UV", "Hecho para el sol"), tr("Standing seam has no exposed screws — the washers on exposed-fastener roofs start failing at 10–15 years in the sun.", "El standing seam no tiene tornillos expuestos — las arandelas de los techos con tornillos expuestos empiezan a fallar a los 10–15 años con el sol.")),
-        ("calendar", tr("Built to last", "Hecho para durar"), tr("A 24-gauge standing seam roof typically lasts 40–70 years.", "Un techo standing seam calibre 24 dura típicamente de 40 a 70 años.")),
-        ("leaf", tr("Cooler on peak days", "Más fresco en los días pico"), tr("The EPA reports reflective cool roofs can cut peak cooling demand 11–27% in air-conditioned homes.", "La EPA reporta que los techos frescos reflectantes pueden reducir la demanda máxima de enfriamiento entre 11% y 27%.")),
-        ("flame", tr("Non-combustible", "No combustible"), tr("Metal won't burn — a layer of protection against embers and sparks.", "El metal no se quema — una capa de protección contra brasas y chispas.")),
+        ("sun", tr("Built for UV", "Hecho para el sol"), tr("Standing seam has no screws through the panel face. On exposed-fastener roofs, the rubber washers can start failing at 10–15 years in the sun.", "El standing seam no tiene tornillos en la cara del panel. En los techos con tornillos expuestos, las arandelas pueden empezar a fallar a los 10–15 años con el sol.")),
+        ("calendar", tr("Built to last", "Hecho para durar"), tr("A 24-gauge standing seam roof typically lasts 40–70 years (industry range, not a warranty).", "Un techo standing seam calibre 24 dura típicamente de 40 a 70 años (rango de la industria, no una garantía).")),
+        ("leaf", tr("Cooler on peak days", "Más fresco en los días pico"), tr(f"The {epa('EPA reports')} reflective cool roofs can cut peak cooling demand 11–27% in air-conditioned buildings.", f"La {epa('EPA reporta')} que los techos frescos reflectantes pueden reducir la demanda máxima de enfriamiento entre 11% y 27%.")),
+        ("storm", tr("Ready for monsoon and hail", "Listo para el monzón y el granizo"), tr("Interlocking panels shed hard rain, and many metal systems are tested to UL 2218 Class 4 for impact.", "Los paneles entrelazados desalojan la lluvia fuerte, y muchos sistemas de metal están probados bajo UL 2218 Clase 4.")),
     ]
     handy = [
         tr("The property address", "La dirección de la propiedad"),
@@ -756,7 +707,7 @@ def page_residential():
         (tr("My roof is almost flat. Can it be metal?", "Mi techo es casi plano. ¿Puede ser de metal?"),
          tr("Snap-lock standing seam and R-panel both need at least a 3:12 pitch. Flatter roofs need a different system — we'll look at yours and tell you straight.", "El standing seam snap-lock y el R-panel necesitan al menos una inclinación de 3:12. Los techos más planos necesitan otro sistema — revisamos el suyo y le decimos con claridad.")),
         (tr("Which colors can I choose?", "¿Qué colores puedo elegir?"),
-         tr("Twelve on our R-panel chart — try them in the color visualizer on our home page. We bring physical chips to your site visit.", "Doce en nuestra carta de R-panel — pruébelos en el visualizador de la página principal. Llevamos muestras físicas a la visita.")),
+         tr(f'Twelve on our R-panel chart — try them in the <a href="{url("home", anchor="#colors")}">color visualizer</a>. We bring physical chips to your site visit.', f'Doce en nuestra carta de R-panel — pruébelos en el <a href="{url("home", anchor="#colors")}">visualizador de colores</a>. Llevamos muestras físicas a la visita.')),
         (tr("Do you handle the permit?", "¿Ustedes tramitan el permiso?"),
          tr("Yes. When the job needs a permit, we pull it and schedule the inspections.", "Sí. Cuando el trabajo requiere permiso, nosotros lo tramitamos y programamos las inspecciones.")),
         (tr("How much does it cost?", "¿Cuánto cuesta?"),
@@ -827,10 +778,9 @@ def page_shingle():
     step_html = "".join(f'<li class="step reveal"><h3>{t}</h3><p>{d}</p></li>' for t, d in steps)
     rows = [
         (tr("Typical life in our sun", "Vida típica con nuestro sol"), tr("Often 15–20 years", "Con frecuencia 15–20 años"), tr("40–70 years (24 ga standing seam)", "40–70 años (standing seam calibre 24)")),
-        (tr("Hail", "Granizo"), tr("Granules knocked loose, bruising", "Pierde gránulos, se golpea"), tr("Many systems rated UL 2218 Class 4", "Muchos sistemas con clasificación UL 2218 Clase 4")),
-        (tr("Heat", "Calor"), tr("Dark shingles absorb sun", "Las tejas oscuras absorben el sol"), tr("Reflective finishes; EPA: peak cooling demand down 11–27%", "Acabados reflectantes; EPA: demanda máxima de enfriamiento baja 11–27%")),
+        (tr("Hail", "Granizo"), tr("Granules knocked loose, bruising", "Pierde gránulos, se golpea"), tr("Many systems tested to UL 2218 Class 4 — ask which", "Muchos sistemas probados bajo UL 2218 Clase 4 — pregunte cuáles")),
+        (tr("Heat", "Calor"), tr("Dark shingles absorb sun", "Las tejas oscuras absorben el sol"), tr(f"Reflective finishes available; per the {epa('EPA')}, cool roofs can cut peak cooling demand 11–27%", f"Acabados reflectantes; según la {epa('EPA')}, los techos frescos pueden bajar la demanda máxima de enfriamiento 11–27%")),
         (tr("Wind", "Viento"), tr("Tabs lift and crack", "Las pestañas se levantan y agrietan"), tr("Interlocking panels", "Paneles entrelazados")),
-        (tr("Fire", "Fuego"), tr("Combustible", "Combustible"), tr("Non-combustible", "No combustible")),
     ]
     sh, mt = tr("Asphalt shingles", "Tejas de asfalto"), tr("Metal", "Metal")
     body_rows = "".join(f'<tr><th scope="row">{k}</th><td data-label="{sh}">{a}</td><td data-label="{mt}">{b}</td></tr>' for k, a, b in rows)
@@ -852,7 +802,7 @@ def page_shingle():
     ) + header() + photo_hero(
         "el1", tr("New R-panel metal roof on an El Paso home that used to have shingles", "Techo R-panel nuevo en una casa de El Paso que antes tenía tejas"),
         tr("Shingle to metal", "De tejas a metal"),
-        tr("Done reroofing every 15 years? Go metal.", "¿Cansado de retejar cada 15 años? Cámbiese a metal."),
+        tr("Tired of reroofing? Go metal.", "¿Cansado de retejar? Cámbiese a metal."),
         tr("We replace worn shingle roofs with 26-gauge R-panel or 24-gauge standing seam — torn off to the deck, sealed, and built for El Paso sun.", "Cambiamos techos de tejas gastados por R-panel calibre 26 o standing seam calibre 24 — retirados hasta la cubierta, sellados y hechos para el sol de El Paso."),
     ) + f'''
 <section class="section">
@@ -898,6 +848,7 @@ def page_commercial():
         tr("Plans and roof / wall panel specs", "Planos y especificaciones de paneles de techo / pared"),
         tr("Bid due date", "Fecha límite de la cotización"),
         tr("Expected construction schedule", "Calendario de construcción previsto"),
+        tr("Your prequalification packet — tell us what paperwork and references you need", "Su paquete de precalificación — díganos qué documentos y referencias necesita"),
     ]
     subject = tr("Bid%20invitation", "Invitaci%C3%B3n%20a%20licitar")
     return head(
@@ -929,20 +880,15 @@ def page_commercial():
       <h3>{tr("Send us the package and we'll get you a number.", "Envíenos el paquete y le damos un precio.")}</h3>
       <ul class="checks">{"".join(f"<li>{s}</li>" for s in send)}</ul>
       <a class="btn btn-block" href="mailto:{EMAIL}?subject={subject}">{icon('doc')}{tr('Email plans & specs', 'Enviar planos por correo')}</a>
+      <a class="btn btn-block btn-ghost" href="{url('contact')}?type=commercial#quote">{tr('Or use the bid form', 'O use el formulario')}</a>
       <p class="form-fine" style="margin-top:14px">{tr('Or call', 'O llame al')} <a href="tel:{TEL}">{PHONE}</a>.</p>
     </div>
-  </div>
-</section>
-<section class="section">
-  <div class="container">
-    <div class="section-head wide"><p class="eyebrow">{tr('Recent work', 'Trabajo reciente')}</p><h2>{tr('Standing seam on the Gulf Coast.', 'Standing seam en la costa del Golfo.')}</h2></div>
-    {project_galveston()}
   </div>
 </section>
 <section class="section sand">
   <div class="container">
     <div class="section-head"><p class="eyebrow">{tr('Systems', 'Sistemas')}</p><h2>{tr('Standing seam and R-panel.', 'Standing seam y R-panel.')}</h2></div>
-    {systems()}
+    {systems(homes=False)}
   </div>
 </section>
 {cta_band()}
@@ -981,10 +927,10 @@ def page_guide():
          tr("24 ga · 1-3/4&quot; snap-lock seam · 18&quot; panels", "Calibre 24 · costura snap-lock de 1-3/4&quot; · paneles de 18&quot;"),
          tr("26 ga · 36&quot; coverage per panel", "Calibre 26 · 36&quot; de cobertura por panel")),
         (tr("In our sun", "Con nuestro sol"),
-         tr("Nothing exposed for UV to break down.", "Nada expuesto que el sol pueda deteriorar."),
-         tr("Washers break down in UV and start failing at 10–15 years.", "Las arandelas se deterioran con el sol y empiezan a fallar a los 10–15 años.")),
+         tr("No washers in the panel face for UV to break down.", "Sin arandelas en la cara del panel que el sol pueda deteriorar."),
+         tr("Washers break down in UV and can start failing at 10–15 years.", "Las arandelas se deterioran con el sol y pueden fallar a los 10–15 años.")),
         (tr("Service life", "Vida útil"),
-         tr("40–70 years typical.", "40–70 años típicos."),
+         tr("40–70 years typical (industry range).", "40–70 años típicos (rango de la industria)."),
          tr("The panel lasts decades; plan on fastener upkeep over time.", "El panel dura décadas; conviene dar mantenimiento a los tornillos con los años.")),
         (tr("Look", "Apariencia"),
          tr("Flat striated pans and tall raised seams. Modern.", "Paneles planos estriados y costuras elevadas. Moderno."),
@@ -1037,7 +983,7 @@ def page_guide():
     <div class="reveal">
       <p class="eyebrow">{tr('Our honest take', 'Nuestra opinión honesta')}</p>
       <h2>{tr("For a home you plan to keep, go standing seam.", "Para una casa que piensa conservar, elija standing seam.")}</h2>
-      <p class="lead">{tr("With no exposed fasteners, there's nothing for the sun to break down, and it looks great doing it. For a shop, barn or a tighter budget, R-panel is a strong, economical roof — just plan on checking fasteners as it ages.", "Sin tornillos expuestos, no hay nada que el sol pueda deteriorar, y se ve muy bien. Para un taller, un granero o un presupuesto más ajustado, el R-panel es un techo resistente y económico — solo conviene revisar los tornillos con los años.")}</p>
+      <p class="lead">{tr("With no screws through the panel face, the part our sun attacks first on a metal roof isn't there — and it looks great. For a shop, barn or a tighter budget, R-panel is a strong, economical roof — just plan on checking fasteners as it ages.", "Sin tornillos en la cara del panel, no está la parte que el sol ataca primero en un techo de metal — y se ve muy bien. Para un taller, un granero o un presupuesto más ajustado, el R-panel es un techo resistente y económico — solo conviene revisar los tornillos con los años.")}</p>
       <p>{tr("Not sure? We'll look at your building and tell you straight.", "¿No está seguro? Revisamos su propiedad y le decimos con claridad.")}</p>
     </div>
     {lifespan_chart()}
@@ -1088,7 +1034,7 @@ def page_about():
 
 def page_contact():
     msgs = {
-        "invalid": tr("Please add your name, a phone number, and a few project details.", "Por favor agregue su nombre, un teléfono y algunos detalles del proyecto."),
+        "invalid": tr("Please add your name, a phone number and a few project details — and check the email address if you added one.", "Por favor agregue su nombre, un teléfono y algunos detalles del proyecto — y revise el correo si lo agregó."),
         "sending": tr("Sending…", "Enviando…"),
         "ok": tr("Thanks — we got it. We'll call you back soon.", "Gracias — lo recibimos. Le llamaremos pronto."),
         "fail": tr(f"Something went wrong. Please call us at {PHONE}.", f"Algo salió mal. Por favor llámenos al {PHONE}."),
@@ -1154,6 +1100,16 @@ def page_contact():
           {choice("project_type", "Residential", tr("Home", "Casa"), True)}
           {choice("project_type", "Commercial", tr("Commercial / bid", "Comercial / licitación"))}
         </fieldset>
+        <div class="commercial-only" hidden>
+          <div class="row">
+            <div class="field"><label for="f-project">{tr('Project name', 'Nombre del proyecto')}</label><input class="input" id="f-project" name="project_name"></div>
+            <div class="field"><label for="f-company">{tr('Company', 'Empresa')}</label><input class="input" id="f-company" name="company" autocomplete="organization"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="f-bid">{tr('Bid due date', 'Fecha límite de la cotización')} <span class="opt">({tr('optional', 'opcional')})</span></label><input class="input" id="f-bid" name="bid_due" type="date"></div>
+            <div class="field"><label for="f-plans">{tr('Link to plans', 'Enlace a los planos')} <span class="opt">({tr('optional', 'opcional')})</span></label><input class="input" id="f-plans" name="plans_link" type="url" inputmode="url" placeholder="https://"></div>
+          </div>
+        </div>
         <fieldset class="choices field">
           <legend>{tr('What do you need?', '¿Qué necesita?')}</legend>
           {choice("service", "New / replacement roof", tr("New roof", "Techo nuevo"), True)}
@@ -1168,7 +1124,7 @@ def page_contact():
         </div>
         <div class="row">
           <div class="field"><label for="f-email">Email <span class="opt">({tr('optional', 'opcional')})</span></label><input class="input" id="f-email" name="email" type="email" autocomplete="email"></div>
-          <div class="field"><label for="f-area">{tr('Neighborhood or city', 'Colonia o ciudad')}</label><input class="input" id="f-area" name="area" autocomplete="address-level2"></div>
+          <div class="field"><label for="f-area">{tr('Project location', 'Ubicación del proyecto')}</label><input class="input" id="f-area" name="area" autocomplete="address-level2"></div>
         </div>
         <div class="row">
           <div class="field"><label for="f-color">{tr('Color in mind?', '¿Color en mente?')} <span class="opt">({tr('optional', 'opcional')})</span></label><select class="select" id="f-color" name="color">{color_opts}</select></div>
@@ -1177,11 +1133,46 @@ def page_contact():
         <div class="field"><label for="f-details">{tr('Project details', 'Detalles del proyecto')}</label><textarea class="textarea" id="f-details" name="details" required placeholder="{tr('What’s on the roof now, rough size, timing, anything else…', 'Qué tiene el techo ahora, tamaño aproximado, cuándo, cualquier otro detalle…')}"></textarea></div>
         <button class="btn btn-lg btn-block" type="submit">{tr('Send request', 'Enviar solicitud')}</button>
         <p class="form-status" role="status" aria-live="polite"></p>
-        <p class="form-fine">{tr("We'll only use your info to reply about your project.", "Solo usaremos sus datos para responder sobre su proyecto.")}</p>
+        <p class="form-fine">{tr("We'll only use your info to reply about your project.", "Solo usaremos sus datos para responder sobre su proyecto.")} <a href="{url('privacy')}">{tr('Privacy', 'Privacidad')}</a></p>
       </form>
     </div>
   </div>
 </section>
+''' + footer(ridge_on="")
+
+
+def page_privacy():
+    sections = [
+        (tr("What we collect", "Qué recopilamos"),
+         tr("Only what you type into the quote form — your name, phone, email if you add it, project location and project details — or what you tell us when you call or email.",
+            "Solo lo que escribe en el formulario — su nombre, teléfono, correo si lo agrega, ubicación y detalles del proyecto — o lo que nos dice al llamar o escribir.")),
+        (tr("How the form works", "Cómo funciona el formulario"),
+         tr('The quote form is delivered to our email by <a href="https://formsubmit.co/" rel="noopener">FormSubmit</a>, a form-forwarding service. It passes your message along to us; see their site for how they handle data.',
+            'El formulario llega a nuestro correo a través de <a href="https://formsubmit.co/" rel="noopener">FormSubmit</a>, un servicio para reenviar formularios. Solo nos pasa su mensaje; consulte su sitio para saber cómo manejan los datos.')),
+        (tr("How we use it", "Cómo lo usamos"),
+         tr("To reply to you about your project, schedule an inspection and send your quote. We don't sell your information or add you to a mailing list.",
+            "Para responderle sobre su proyecto, programar una inspección y enviarle su cotización. No vendemos su información ni lo agregamos a listas de correo.")),
+        (tr("Cookies and tracking", "Cookies y rastreo"),
+         tr("This site doesn't set advertising cookies. Fonts and images are served from this site. If we add visitor analytics later, we'll update this page.",
+            "Este sitio no usa cookies de publicidad. Las fuentes e imágenes se sirven desde este sitio. Si más adelante agregamos analíticas de visitas, actualizaremos esta página.")),
+        (tr("Questions or removal", "Preguntas o eliminación"),
+         tr(f'Email <a href="mailto:{EMAIL}">{EMAIL}</a> or call <a href="tel:{TEL}">{PHONE}</a> and we\'ll delete what you sent us.',
+            f'Escriba a <a href="mailto:{EMAIL}">{EMAIL}</a> o llame al <a href="tel:{TEL}">{PHONE}</a> y borraremos lo que nos envió.')),
+    ]
+    body = "".join(f"<h2>{h}</h2><p>{t}</p>" for h, t in sections)
+    return head(
+        tr("Privacy | Manifest Metals", "Privacidad | Manifest Metals"),
+        tr("How Manifest Metals handles the information you send through our website.", "Cómo maneja Manifest Metals la información que nos envía por el sitio."),
+        image=None, crumb=tr("Privacy", "Privacidad"),
+    ) + header() + f'''
+<section class="page-hero dark">
+  <div class="container">
+    <nav class="crumbs" aria-label="{tr('Breadcrumb', 'Ruta')}"><a href="{url('home')}">{tr('Home', 'Inicio')}</a><span aria-hidden="true">/</span>{tr('Privacy', 'Privacidad')}</nav>
+    <h1>{tr("Privacy", "Privacidad")}</h1>
+    <p class="lead">{tr("Short version: we use what you send us to answer you, and nothing else.", "En corto: usamos lo que nos envía para responderle, y nada más.")}</p>
+  </div>
+</section>
+<section class="section"><div class="container prose">{body}</div></section>
 ''' + footer(ridge_on="")
 
 
@@ -1199,7 +1190,7 @@ def page_404():
 BUILDERS = {
     "home": page_home, "residential": page_residential, "commercial": page_commercial,
     "projects": page_projects, "shingle": page_shingle, "guide": page_guide,
-    "about": page_about, "contact": page_contact,
+    "about": page_about, "contact": page_contact, "privacy": page_privacy,
 }
 
 

@@ -59,6 +59,8 @@
     var label = stage.querySelector(".viz-name");
     var labelChip = stage.querySelector(".viz-label .chip");
     var swatches = document.querySelectorAll(".swatch");
+    var quote = document.getElementById("viz-quote");
+    var quoteName = quote && quote.querySelector(".viz-name-cta");
     var preload = function (btn) {
       if (btn._img) return btn._img;
       var im = new Image();
@@ -79,6 +81,10 @@
           b.setAttribute("aria-pressed", String(b === btn));
         });
         label.textContent = btn.getAttribute("data-name");
+        if (quote) {
+          quote.href = quote.getAttribute("data-base") + "?color=" + encodeURIComponent(btn.getAttribute("data-value")) + "#quote";
+          quoteName.textContent = btn.getAttribute("data-name");
+        }
         labelChip.style.setProperty("--c", btn.querySelector(".chip").style.getPropertyValue("--c"));
         var next = preload(btn).cloneNode();
         var show = function () {
@@ -108,39 +114,42 @@
     lb.addEventListener("click", function (e) { if (e.target === lb || e.target.closest(".lb-close")) lb.close(); });
   }
 
-  // Hero slideshow of real jobs
-  var slides = document.querySelectorAll(".slides .slide");
-  var capText = document.querySelector(".slide-cap-text");
-  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (slides.length > 1 && !still) {
-    var cur = 0;
-    var load = function (fig) {
-      var im = fig.querySelector("img[data-src]");
-      if (im) { im.srcset = im.getAttribute("data-srcset"); im.src = im.getAttribute("data-src"); im.removeAttribute("data-src"); }
-    };
-    window.addEventListener("load", function () { slides.forEach(load); });
-    setInterval(function () {
-      if (document.hidden) return;
-      var next = (cur + 1) % slides.length;
-      load(slides[next]);
-      slides[cur].classList.remove("on");
-      slides[next].classList.add("on");
-      if (capText) capText.textContent = slides[next].getAttribute("data-cap");
-      cur = next;
-    }, 6500);
-  }
-
   // Quote form. The endpoint is set in _build/build.py (FORM_ENDPOINT).
   var form = document.getElementById("quote-form");
   if (!form) return;
   var status = form.querySelector(".form-status");
   var msg = function (key) { return form.getAttribute("data-msg-" + key); };
 
+  // Commercial-only fields show when "Commercial / bid" is picked
+  var bizFields = form.querySelector(".commercial-only");
+  var syncType = function () {
+    var picked = form.querySelector("input[name=project_type]:checked");
+    var biz = picked && picked.value === "Commercial";
+    bizFields.hidden = !biz;
+    bizFields.querySelectorAll("input").forEach(function (i) { i.disabled = !biz; });
+  };
+  form.querySelectorAll("input[name=project_type]").forEach(function (r) { r.addEventListener("change", syncType); });
+
+  // Prefill from links like ?color=Light+Stone or ?type=commercial
+  var params = new URLSearchParams(window.location.search);
+  var color = params.get("color");
+  var colorSelect = form.querySelector("select[name=color]");
+  if (color && colorSelect) {
+    Array.prototype.forEach.call(colorSelect.options, function (o) { if (o.value === color) colorSelect.value = color; });
+  }
+  if (params.get("type") === "commercial") {
+    var biz = form.querySelector("input[name=project_type][value=Commercial]");
+    if (biz) biz.checked = true;
+  }
+  syncType();
+
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var ok = true;
-    form.querySelectorAll("[required]").forEach(function (field) {
-      var valid = field.value.trim() !== "" && field.checkValidity();
+    form.querySelectorAll("[required], input[type=email], input[type=url]").forEach(function (field) {
+      if (field.disabled) return;
+      var filled = field.value.trim() !== "";
+      var valid = field.required ? filled && field.checkValidity() : !filled || field.checkValidity();
       field.setAttribute("aria-invalid", valid ? "false" : "true");
       if (!valid && ok) { field.focus(); ok = false; }
     });
@@ -166,6 +175,7 @@
       .then(function (res) {
         if (String(res.success) !== "true") throw new Error(res.message);
         form.reset();
+        syncType();
         status.textContent = msg("ok");
         status.className = "form-status ok";
       })
