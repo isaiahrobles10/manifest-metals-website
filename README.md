@@ -1,5 +1,7 @@
 # Manifest Metals
 
+> New here, or picking this up in a different Claude account? Start with `HANDOFF.md` (setup and open items) and `CLAUDE.md` (how to edit the site).
+
 Website for Manifest Metals, LLC: metal roofing and siding, El Paso, Texas. English and Spanish.
 
 ## How it's built
