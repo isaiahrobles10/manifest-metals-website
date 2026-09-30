@@ -4,7 +4,7 @@ Last updated: September 30, 2026
 
 This file is for moving the project from a personal Claude account to a business Claude account, and from Claude in the cloud to local work on a Mac in the Claude desktop app.
 
-**Where it lives:** https://github.com/isaiahrobles10/manifest-metals-website (branch `main`)
+**Where it lives:** https://github.com/isaiahrobles10/manifest-metals-website (branch `main`). After the move in section 2, it's at `github.com/<business-account>/manifest-metals-website`.
 **Technical guide for Claude:** `CLAUDE.md`, which Claude loads automatically whenever this folder is opened.
 
 ---
@@ -29,17 +29,25 @@ These files were used to build the site but were never in the repo. Keep them so
 
 ---
 
-## 2. Give the business Claude access to the code
+## 2. Move the repo to the business GitHub account
 
-Pick one:
+The repo is owned by the personal GitHub account `isaiahrobles10`. The business Claude account is connected to a **different** GitHub account, so that GitHub account needs the repo. **Merge any open PRs first.**
 
-**A. Keep the repo where it is (fastest).** The repo is owned by the GitHub user `isaiahrobles10`. Sign in to the business Claude account and connect that same GitHub account. On claude.ai this is under Settings → Connectors → GitHub. For local work on the Mac, you only need git signed in to GitHub (step 3).
+**Recommended: transfer ownership.** The site belongs to the business, so the business GitHub account should own it. Transferring keeps all history, PRs and settings, and GitHub redirects the old repo URL.
+1. Signed in as `isaiahrobles10`, open the repo → **Settings** → **General** → scroll to **Danger Zone** → **Transfer ownership**.
+2. Type the business GitHub username (or organization name) as the new owner and confirm.
+3. If the business account is a personal account, it gets an email asking it to accept, and it must accept within a day. If it's an organization, the transfer happens right away, as long as `isaiahrobles10` is allowed to create repos in that org.
+4. The business account can't already have a repo with the same name.
 
-**B. Move the repo to a business GitHub organization (cleaner long-term).** On GitHub, open the repo → Settings → General → Danger Zone → **Transfer ownership**, and pick the business org. GitHub redirects the old URL, but after the move you should:
-- Run `git remote set-url origin https://github.com/<org>/manifest-metals-website.git` in any existing clone.
-- Re-check Settings → Pages in the new location.
-- Install the Claude GitHub App on the org if you want Claude on the web to open PRs.
-- Note that the site's address changes from `isaiahrobles10.github.io/...` to `<org>.github.io/...` until a custom domain is set.
+After the transfer:
+- **Re-check GitHub Pages** in the new repo (Settings → Pages: deploy from branch `main`, folder `/ (root)`). The site address changes to `<business-account>.github.io/manifest-metals-website/`, and the old github.io address is **not** redirected. This doesn't matter once `manifestmetals.com` is connected (section 5). On a free GitHub plan, Pages only works if the repo is **public**.
+- **Point existing clones at the new home:** `git remote set-url origin https://github.com/<business-account>/manifest-metals-website.git`
+- **Claude on the web** (claude.ai/code): in the business Claude account, connect the business GitHub account and install the Claude GitHub App on it, choosing this repo.
+- **Claude desktop app on the Mac:** no GitHub connection inside Claude is needed. git on the Mac just has to be signed in as the business GitHub account (section 3).
+
+**Alternatives:**
+- **Add a collaborator.** Keep the repo on `isaiahrobles10` and invite the business GitHub account under Settings → Collaborators → Add people. This is quick and easy to undo, but the business never owns its own website.
+- **Make a fresh copy.** Create an empty repo under the business account and push everything to it (`git push --mirror <new-url>` from a clone). This leaves the personal copy untouched, but you then have two copies that drift apart, and the PRs don't come along.
 
 ---
 
@@ -57,7 +65,8 @@ python3 --version        # needs 3.8 or newer
 
 # 3. Get the code (put it wherever you like; ~/Projects is a good spot)
 mkdir -p ~/Projects && cd ~/Projects
-git clone https://github.com/isaiahrobles10/manifest-metals-website.git
+# use the business account's URL if you've transferred the repo (section 2)
+git clone https://github.com/<business-account>/manifest-metals-website.git
 cd manifest-metals-website
 
 # 4. Prove the build works: should print "Built 19 pages" and change nothing
@@ -69,7 +78,7 @@ python3 -m http.server 8000
 # open http://localhost:8000 in your browser; press Ctrl+C in Terminal to stop
 ```
 
-**Signing in to GitHub for pushes.** The first `git push` asks for a password, and GitHub doesn't accept your account password there. The easiest fix is **GitHub Desktop** (desktop.github.com): sign in once and it handles credentials. Another option is to install the GitHub CLI and run `gh auth login`.
+**Signing in to GitHub for pushes.** The first `git push` asks for a password, and GitHub doesn't accept your account password there. The easiest fix is **GitHub Desktop** (desktop.github.com): sign in once **with the business GitHub account** and it handles credentials. If the Mac already has the personal account saved, sign out of it first. Otherwise pushes go out as the wrong account and can be rejected. Another option is to install the GitHub CLI and run `gh auth login`.
 
 No npm, Node, Homebrew or other packages are needed.
 
